@@ -1,0 +1,15 @@
+# WDL model inputs (parquets, conversion factors, city polygons, names) stay local: internal data
+data/*
+# public-source rent tables and the fitted slopes are kept
+!data/official_rents.csv
+!data/rents_*.csv
+!data/uk_rent_ratio.csv
+!data/fr_rent_cities.csv
+!data/de_rent_cities.csv
+!data/bea_rpp_msa.csv
+!data/city_model_coef.json
+__pycache__/
+_qa/
+site/
+page.html
+room-to-spend/.vercel/

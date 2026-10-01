@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Room to Spend · World Data Lab</title>
+<meta name="description" content="Tell us where you live and where you might move. We find the pay that buys you the same standard of living there, priced at that country's prices and with each city's own rent where we have it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&family=Inter+Tight:wght@400;500;600&display=swap">
+<style>
+:root{
+  --font-display:'Montserrat',system-ui,sans-serif;
+  --font-sans:'Inter Tight','Inter',system-ui,sans-serif;
+  --paper:#FFFFFF; --band:#F2F3F8;
+  --ink:#0B1138; --ink-2:#454B70; --ink-mut:#5C6382; --ink-body:#6B7290;
+  --hairline:#E4E6EF; --accent:#4C5BE4; --accent-deep:#3243CE; --accent-wash:#EEF0FD;
+  --gut:clamp(20px,4.5vw,80px);
+  --ease:cubic-bezier(.32,.72,0,1);
+}
+@media(min-width:1280px){ :root{ --gut:max(140px, calc(clamp(44px,4.5vw,80px) + 75px)) } }
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink)}
+body{font:400 16px/1.55 var(--font-sans);-webkit-font-smoothing:antialiased}
+#dotField{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:0;
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 38%,rgba(0,0,0,.5) 66%,transparent 94%);
+  mask-image:linear-gradient(180deg,#000 0%,#000 38%,rgba(0,0,0,.5) 66%,transparent 94%)}
+.wrap{position:relative;z-index:1;max-width:1760px;margin:0 auto;padding:0 var(--gut)}
+
+/* the head on its own ground */
+header{position:relative;padding:28px 0 clamp(48px,6vw,88px)}
+header::before{content:'';position:absolute;top:0;bottom:0;left:50%;width:100vw;transform:translateX(-50%);z-index:-1;
+  background-color:var(--band);background-image:radial-gradient(rgba(11,17,56,.06) .7px,transparent .7px);background-size:14px 14px}
+.logo{display:block;width:180px;height:auto;margin-bottom:clamp(64px,10vh,120px)}
+h1{font:400 clamp(34px,4.6vw,64px)/1.02 var(--font-display);letter-spacing:-.02em;max-width:min(100%,20ch);text-wrap:balance;margin:0}
+h1 em{font-style:normal;color:var(--accent)}
+.hero-sub{margin:18px 0 0;font-size:clamp(15px,1.25vw,18px);line-height:1.45;color:var(--ink-body);max-width:54ch}
+
+main{padding-block:clamp(48px,6vw,88px) clamp(56px,7vw,96px);display:flex;flex-direction:column;gap:clamp(48px,6vw,80px)}
+
+/* the question, written as a sentence */
+.ask{max-width:1180px;margin:0;font:400 clamp(22px,2.4vw,32px)/1.7 var(--font-display);letter-spacing:-.01em;color:var(--ink)}
+.ask p{margin:0}
+.slot{display:inline-flex;align-items:center;border-bottom:2px solid var(--ink);vertical-align:baseline;max-width:100%}
+.slot:focus-within{border-color:var(--accent)}
+.slot img{width:1.05em;height:auto;margin-right:.3em;border-radius:3px;box-shadow:0 0 0 1px rgba(11,17,56,.08);flex:none}
+.slot input{font:500 1em/1.2 var(--font-sans);color:var(--accent);background:transparent;border:0;padding:0 2px;outline:none;min-width:2em;max-width:100%}
+.slot input::-webkit-calendar-picker-indicator{display:none!important;opacity:0}
+.slot .cur{font:500 1em/1.2 var(--font-sans);color:var(--accent)}
+#amount{font-variant-numeric:tabular-nums}
+.hint{font:400 15px/1.5 var(--font-sans);color:var(--ink-mut);margin-top:10px}
+.hint[hidden]{display:none}
+
+/* the answer */
+.answer{max-width:1000px}
+.answer .pre{margin:0;display:flex;align-items:center;gap:10px;font:400 clamp(18px,1.6vw,22px)/1.4 var(--font-display);color:var(--ink-2)}
+.answer .pre img{width:30px;height:auto;border-radius:3px;box-shadow:0 0 0 1px rgba(11,17,56,.08)}
+.big{margin:10px 0 0;font:500 clamp(48px,7vw,96px)/1 var(--font-sans);letter-spacing:-.03em;color:var(--accent);font-variant-numeric:tabular-nums}
+.big small{font:400 .32em/1 var(--font-sans);letter-spacing:0;color:var(--ink-2);margin-left:.35em}
+.answer .post{margin:20px 0 0;font-size:clamp(16px,1.3vw,18px);line-height:1.55;color:var(--ink-body);max-width:60ch}
+.answer .post b{color:var(--ink);font-weight:500}
+
+/* five cities */
+.similar h2{font:400 clamp(26px,2.8vw,40px)/1.1 var(--font-display);letter-spacing:-.02em;margin:0;max-width:760px;text-wrap:balance}
+.similar .sub{margin:12px 0 0;color:var(--ink-body);font-size:clamp(15px,1.2vw,17px);max-width:60ch}
+.cards{list-style:none;margin:36px 0 0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
+.card{display:flex}
+.card button{all:unset;box-sizing:border-box;cursor:pointer;width:100%;display:grid;grid-template-rows:auto 1fr auto;gap:18px;
+  background:var(--paper);border:1px solid var(--hairline);border-radius:16px;padding:22px;
+  box-shadow:0 1px 2px rgba(11,17,56,.04),0 8px 24px -16px rgba(11,17,56,.18);
+  transition:transform .4s var(--ease),border-color .4s var(--ease),box-shadow .4s var(--ease)}
+.card button:hover{transform:translateY(-3px);border-color:rgba(76,91,228,.45);box-shadow:0 1px 2px rgba(11,17,56,.04),0 18px 36px -18px rgba(76,91,228,.45)}
+.card button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.card .flag{display:block;width:44px;height:33px;border-radius:5px;object-fit:cover;box-shadow:0 0 0 1px rgba(11,17,56,.08)}
+.card .place{display:flex;flex-direction:column;gap:2px;min-width:0}
+.card .c{font:400 21px/1.2 var(--font-display);color:var(--ink);overflow-wrap:anywhere}
+.card .k{font-size:14px;color:var(--ink-mut)}
+.card .money{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--hairline);padding-top:16px}
+.card .v{font:500 24px/1.1 var(--font-sans);color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.card .u{font-size:14px;color:var(--ink-mut);font-variant-numeric:tabular-nums}
+.card .d{align-self:flex-start;margin-top:4px;font:500 13px/1 var(--font-sans);color:var(--accent-deep);background:var(--accent-wash);border-radius:999px;padding:6px 10px;font-variant-numeric:tabular-nums}
+@media(max-width:1180px){ .cards{grid-template-columns:repeat(3,minmax(0,1fr))} }
+@media(max-width:700px){ .cards{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media(max-width:440px){ .cards{grid-template-columns:1fr} }
+
+footer{border-top:1px solid var(--hairline);padding-block:28px 48px}
+footer{display:flex;flex-direction:column;gap:12px}
+footer p{margin:0;font-size:14px;line-height:1.7;color:var(--ink-mut)}
+.src-h{margin:20px 0 0;font:400 18px/1.2 var(--font-display);color:var(--ink)}
+.src{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 32px}
+.src li{font-size:14px;line-height:1.6;color:var(--ink-mut)}
+.src b{font-weight:500;color:var(--ink-2)}
+.src a{color:var(--accent-deep);text-underline-offset:2px}
+@media(max-width:800px){ .src{grid-template-columns:1fr} }
+
+@media (prefers-reduced-motion:no-preference){
+  .big,.cards,.answer .post{transition:opacity .5s var(--ease),transform .5s var(--ease)}
+  .swap .big,.swap .cards,.swap .answer .post{opacity:.25;transform:translateY(6px)}
+}
+@media (prefers-reduced-motion:reduce){ .card button{transition:none} .card button:hover{transform:none} }
+</style>
+</head>
+<body>
+<canvas id="dotField"></canvas>
+<div class="wrap">
+  <header>
+    <img class="logo" src="wdl-logo.png" alt="World Data Lab" width="180" height="13">
+    <h1>Find the pay that buys you the same life in <em>another city</em>.</h1>
+    <p class="hero-sub">Tell us where you live and where you might move. We price everything you spend on, from rent and groceries to eating out and holidays, at that country's prices and with each city's own rent where we have it.</p>
+  </header>
+
+  <main id="main">
+    <form class="ask" id="ask" autocomplete="off">
+      <p>I live in <span class="slot"><img id="homeFlag" src="flags/USA.svg" alt="" width="21" height="16"><input id="home" list="cities" value="New York City, United States" aria-label="The city you live in" spellcheck="false"></span>
+      and take home <span class="slot"><span class="cur" id="cur">$</span><input id="amount" inputmode="numeric" value="100,000" aria-label="What you take home in a year"></span> a year.</p>
+      <p>I am thinking of moving to <span class="slot"><img id="destFlag" src="flags/GBR.svg" alt="" width="21" height="16"><input id="dest" list="cities" value="London, United Kingdom" aria-label="The city you might move to" spellcheck="false"></span>.</p>
+      <datalist id="cities"></datalist>
+      <p class="hint" id="hint" hidden></p>
+    </form>
+
+    <section class="answer" aria-live="polite">
+      <p class="pre"><img id="ansFlag" src="flags/GBR.svg" alt="" width="30" height="23"><span id="pre">In London you would need</span></p>
+      <p class="big" id="big">£79,769<small>a year</small></p>
+      <p class="post" id="post">That buys the life <b>$100,000</b> gives you in New York City. That is 8% more than you take home now. In US dollars, $108,417.</p>
+    </section>
+
+    <section class="similar">
+      <h2 id="h2">Five cities that cost about the same as London</h2>
+      <p class="sub" id="h2sub">Each one buys the same life for about the same pay. Pick one to see it in full.</p>
+      <ul class="cards" id="cards"></ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>Take someone in New York who takes home $100,000. About a fifth of their spending goes on housing, a sixth on healthcare, including what insurance pays, and under a tenth on eating out and hotels. In Lisbon, housing costs 54% less, healthcare 55% less and eating out 33% less. Groceries cost 3% more and getting around 17% more. Housing and healthcare are big parts of the budget, so their lower prices matter most. Add it all up and the same life in Lisbon costs $70,386.</p>
+    <p>We assume you spend all of what you take home, and figures are for one person in 2026. Prices are set country by country, except housing. In the United States and the United Kingdom every city's rent comes from official figures. In Canada, France, Germany, Australia, Spain, Italy, Portugal, the Netherlands, Switzerland, Sweden, Japan, South Korea, Brazil, Mexico and China, official or published figures tell us how much dearer or cheaper each city they cover is than the country's other covered cities. Cities those sources leave out take the level of the cheapest covered city. In other high-income countries we estimate each city's rent from how rich and how big it is, a method we checked against those official figures. Elsewhere a country's cities share one figure. US metro areas also have their own prices for everything else, which we use when you compare two US cities. Prices for 2026 are projected from the World Bank's 2021 price survey, so treat every answer as a guide to the nearest few percent rather than an exact figure. Housing is hardest to compare in city-states and the Gulf, where much of it is public or provided by employers. A few countries without a full price breakdown, such as Russia, take one overall price level for everything. We leave out countries where conflict or the exchange rate means prices cannot be compared.</p>
+    <h2 class="src-h">Sources</h2>
+    <ul class="src">
+      <li><b>Spending shares by country, income level and kind of spending, 2026:</b> World Data Lab, World Data Pro spending model, release 2026.2.1.</li>
+      <li><b>Prices of each kind of spending by country:</b> World Bank, <a href="https://www.worldbank.org/en/programs/icp" rel="noopener" target="_blank">International Comparison Program 2021</a>, carried forward to 2026 with World Data Lab conversion factors.</li>
+      <li><b>Exchange rates, 2026:</b> World Data Lab conversion factors, release 2026.2.1.</li>
+      <li><b>US city prices:</b> US Bureau of Economic Analysis, <a href="https://www.bea.gov/data/prices-inflation/regional-price-parities-state-and-metro-area" rel="noopener" target="_blank">Regional Price Parities by metropolitan area, 2024</a>.</li>
+      <li><b>UK city rents:</b> Office for National Statistics, <a href="https://www.ons.gov.uk/economy/inflationandpriceindices/datasets/priceindexofprivaterentsukmonthlypricestatistics" rel="noopener" target="_blank">Price Index of Private Rents, August 2026</a> (Northern Ireland, June 2026).</li>
+      <li><b>Canadian city rents:</b> Canada Mortgage and Housing Corporation via Statistics Canada, <a href="https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3410013301" rel="noopener" target="_blank">average rents by metropolitan area, 2025</a>.</li>
+      <li><b>French city rents:</b> French Ministry for Ecological Transition, <a href="https://www.data.gouv.fr/datasets/carte-des-loyers-indicateurs-de-loyers-dannonce-par-commune-en-2025" rel="noopener" target="_blank">Carte des loyers 2025</a>.</li>
+      <li><b>German city rents:</b> Federal Statistical Office, <a href="https://www.destatis.de/zensus2022" rel="noopener" target="_blank">Census 2022 average rent on a 1 km grid</a>, averaged over each city.</li>
+      <li><b>Australian city rents:</b> Australian Bureau of Statistics, <a href="https://www.abs.gov.au/census/find-census-data/quickstats/2021" rel="noopener" target="_blank">2021 Census median weekly rent by capital city</a>.</li>
+      <li><b>Spanish city rents:</b> Ministry of Housing, <a href="https://www.mivau.gob.es/vivienda/alquila-bien-es-tu-derecho/serpavi" rel="noopener" target="_blank">SERPAVI rent reference system, 2024</a>.</li>
+      <li><b>Italian city rents:</b> Revenue Agency, <a href="https://www.agenziaentrate.gov.it/portale/web/guest/schede/fabbricatiterreni/omi" rel="noopener" target="_blank">Property Market Observatory (OMI), new leases 2025</a>.</li>
+      <li><b>Portuguese city rents:</b> Statistics Portugal, <a href="https://www.ine.pt" rel="noopener" target="_blank">house rental statistics, new leases to June 2026</a>.</li>
+      <li><b>Dutch city rents:</b> Statistics Netherlands (CBS), <a href="https://datasets.cbs.nl/odata/v1/CBS/85950NED" rel="noopener" target="_blank">housing costs of renters by municipality, 2024</a>, net of housing allowance.</li>
+      <li><b>Swiss city rents:</b> Federal Statistical Office, <a href="https://www.bfs.admin.ch/bfs/en/home/statistics/construction-housing/dwellings/rented-dwellings.html" rel="noopener" target="_blank">structural survey rent per m&sup2; by canton, 2024</a>.</li>
+      <li><b>Swedish city rents:</b> Statistics Sweden, <a href="https://www.scb.se/en/finding-statistics/statistics-by-subject-area/housing-construction-and-building/housing-construction-and-conversion/rents-for-dwellings/" rel="noopener" target="_blank">rents for dwellings, 2025</a>.</li>
+      <li><b>Brazilian city rents:</b> FIPE, <a href="https://downloads.fipe.org.br/indices/fipezap/fipezap-202608-residencial-locacao.pdf" rel="noopener" target="_blank">FipeZAP residential rent index, August 2026</a>.</li>
+      <li><b>Mexican city rents:</b> INEGI, <a href="https://www.inegi.org.mx/programas/enigh/nc/2024/" rel="noopener" target="_blank">household income and expenditure survey (ENIGH) 2024</a>, rent paid by metro area, our calculation.</li>
+      <li><b>Japanese city rents:</b> Statistics Bureau of Japan, <a href="https://www.e-stat.go.jp/stat-search/file-download?statInfId=000040210062&amp;fileKind=0" rel="noopener" target="_blank">2023 Housing and Land Survey, private rent per m&sup2; by city</a>; Tokyo uses Tokyo, Kanagawa, Saitama and Chiba, and Osaka and Nagoya their prefectures, since those cities cover their metro areas.</li>
+      <li><b>South Korean city rents:</b> Korea Real Estate Board, <a href="https://www.reb.or.kr/r-one/portal/bbs/statdata/searchBulletinPage.do" rel="noopener" target="_blank">housing price trend survey, August 2026</a>: average monthly apartment rent plus the deposit at 5% a year; Seoul uses the capital region.</li>
+      <li><b>Chinese city rents:</b> China Index Academy, <a href="https://m.cih-index.com/news/2025-04-23/52652700.html" rel="noopener" target="_blank">50-city residential rental price index, March 2025</a>.</li>
+      <li><b>City rents in other high-income countries:</b> World Data Lab estimate, fitted on the US and UK figures above and checked against the other official figures.</li>
+      <li><b>Flags:</b> <a href="https://github.com/lipis/flag-icons" rel="noopener" target="_blank">flag-icons</a>, MIT licence.</li>
+    </ul>
+  </footer>
+</div>
+
+<script src="data.js"></script>
+<script src="wdl-dotfield.js"></script>
+<script>window.mountDotField(document.getElementById('dotField'));</script>
+<script>
+(function(){
+  var D = window.RTS, K = D.countries;
+  var $ = function(id){ return document.getElementById(id); };
+  // fixed points inside the five spending bands, in dollars a day adjusted to buy the same everywhere
+  var PTS = [7, 24, 64, 108, 200].map(function(v){ return v * 365; });
+  var fold = function(s){ return (s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').trim().toLowerCase(); };
+  var cities = D.cities.map(function(c){ return {n:c[0], c:c[1], card:c[2] === 2, m:c[3] || null, src:c[4] || 0, label:c[0] + ', ' + K[c[1]].k}; });
+  var byLabel = {}, byName = {};
+  cities.forEach(function(c){ byLabel[fold(c.label)] = c; var n = fold(c.n); if (!byName[n]) byName[n] = c; });
+  var ALIAS = {bombay:'mumbai', bangalore:'bengaluru', madras:'chennai', calcutta:'kolkata', kiev:'kyiv', peking:'beijing',
+               saigon:'ho chi minh city', nyc:'new york city', 'new york':'new york city', 'new delhi':'delhi', praha:'prague'};
+  var pool = cities.filter(function(c){ return c.card; });
+  var cityCount = {}; cities.forEach(function(c){ cityCount[c.c] = (cityCount[c.c] || 0) + 1; });
+  $('cities').innerHTML = cities.map(function(c){ return '<option value="' + c.label.replace(/"/g,'&quot;') + '"></option>'; }).join('');
+
+  function find(v){ v = fold(v); return byLabel[v] || byName[v] || byName[ALIAS[v]] || null; }
+  var flag = function(cc){ return 'flags/' + cc + '.svg'; };
+  var esc = function(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); };
+
+  // each box grows to fit what is typed in it
+  var meter = document.createElement('canvas').getContext('2d');
+  function fit(el){
+    var cs = getComputedStyle(el); meter.font = cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily;
+    el.style.width = Math.ceil(meter.measureText(el.value || el.placeholder || ' ').width + 16) + 'px';
+    el.scrollLeft = 0;
+  }
+  function fitAll(){ ['home','amount','dest'].forEach(function(id){ fit($(id)); }); }
+
+  // the twelve spending shares of someone at standard of living x, read between the band points on a log scale
+  function weights(k, x){
+    var b = []; k.w.forEach(function(v, i){ if (v) b.push([PTS[i], v]); });
+    var n = b.length;
+    if (x <= b[0][0]) return b[0][1];
+    if (x >= b[n-1][0]) return b[n-1][1];
+    for (var i = 0; i < n - 1; i++){
+      if (x <= b[i+1][0]){
+        var t = (Math.log(x) - Math.log(b[i][0])) / (Math.log(b[i+1][0]) - Math.log(b[i][0]));
+        return b[i][1].map(function(v, j){ return v + (b[i+1][1][j] - v) * t; });
+      }
+    }
+  }
+  function topPoint(k){ var t = 0; k.w.forEach(function(v, i){ if (v) t = PTS[i]; }); return t; }
+  // how much the same life costs in B against A: a Fisher index, the geometric mean of the price change
+  // on A's basket and on B's basket, both for someone at standard of living x
+  // a city's prices: its country's, scaled by the city's own. US metros carry their own prices for every kind of
+  // spending, every other city only its rent, so across borders a US city keeps only its rent difference
+  function prices(city, cross){
+    var k = K[city.c]; if (!city.m) return k.p;
+    return k.p.map(function(v, j){ return v * (cross && j !== 3 ? 1 : city.m[j]); });
+  }
+  function costRatio(a, b, x){
+    var cross = a.c !== b.c, A = K[a.c], B = K[b.c], pa = prices(a, cross), pb2 = prices(b, cross);
+    var wa = weights(A, x), wb = weights(B, x), L = 0, la = 0, P = 0, pb = 0;
+    for (var j = 0; j < 12; j++){
+      var rel = pb2[j] / pa[j];
+      L += wa[j] * rel; la += wa[j];
+      P += wb[j] / rel; pb += wb[j];
+    }
+    return Math.sqrt((L / la) * (pb / P));
+  }
+  function sig(v, s){ if (!(v > 0)) return 0; var p = Math.pow(10, Math.max(0, Math.floor(Math.log10(v)) - (s - 1))); return Math.round(v / p) * p; }
+  function money(v, cur, s){
+    var n = s ? sig(v, s) : Math.round(v);
+    try { return new Intl.NumberFormat('en', {style:'currency', currency:cur, maximumFractionDigits:0}).format(n); }
+    catch(e){ return cur + ' ' + n.toLocaleString('en'); }
+  }
+  function symbol(cur){
+    try { var p = new Intl.NumberFormat('en', {style:'currency', currency:cur}).formatToParts(0); return p.filter(function(x){ return x.type === 'currency'; })[0].value; }
+    catch(e){ return cur + ' '; }
+  }
+  function amount(){ return parseFloat(($('amount').value || '').split('.')[0].replace(/[^0-9]/g, '')); }
+
+  var home = find($('home').value), dest = find($('dest').value);
+
+  function render(){
+    var hint = $('hint'), y = amount();
+    if (!home || !dest || !(y > 0)){
+      hint.hidden = false;
+      hint.textContent = !home ? 'Choose the city you live in from the list.' : !dest ? 'Choose a city you might move to from the list.' : 'Enter what you take home in a year.';
+      return;
+    }
+    hint.hidden = true;
+    var hk = K[home.c], dk = K[dest.c];
+    var yu = y / hk.fx, x = yu / (hk.r * D.rus);
+    var need = yu * costRatio(home, dest, x);
+    var pct = Math.round(100 * (need / yu - 1));
+
+    $('ansFlag').src = flag(dest.c);
+    $('pre').textContent = 'In ' + dest.n + ' you would need';
+    $('big').innerHTML = money(need * dk.fx, dk.cur) + '<small>a year</small>';
+    var post = 'That buys the life <b>' + esc(money(y, hk.cur)) + '</b> gives you in ' + esc(home.n) + '.';
+    if (home.c === dest.c && home.n !== dest.n && home.src === 6 && dest.src === 6) post += ' Neither city’s rent is published, so both take the level of the cheapest city we have figures for in ' + esc(hk.k) + ', and the figure is the same.';
+    else if (home.c === dest.c && home.n !== dest.n && home.src === 5 && dest.src === 5) post += ' Prices are measured for the country as a whole, so a move within ' + esc(hk.k) + ' keeps the same figure.';
+    else if (pct === 0) post += ' That is the same as you take home now.';
+    else post += ' That is ' + Math.abs(pct) + '% ' + (pct < 0 ? 'less' : 'more') + ' than you take home now.';
+    if (dk.cur !== 'USD' && home.c !== dest.c) post += ' In US dollars, ' + money(need, 'USD') + '.';
+    if (dest.src === 3 && dest.n !== home.n) post += ' Rent in ' + esc(dest.n) + ' is our estimate, from how its incomes and size compare with the rest of ' + esc(dk.k) + '.';
+    else if (dest.src === 6 && dest.n !== home.n && home.src !== 6) post += ' Rent for ' + esc(dest.n) + ' is not published, so it takes the level of the cheapest city we have figures for in ' + esc(dk.k) + '.';
+    else if (dest.src === 5 && home.c !== dest.c && cityCount[dest.c] > 1 && ['SGP','HKG','MAC'].indexOf(dest.c) < 0) post += ' We do not have rents for each city in ' + esc(dk.k) + ', so its cities share one figure.';
+    if (home.c !== dest.c && x > 2 * topPoint(dk)) post += ' Few people in ' + esc(dk.k) + ' live at your standard, so treat this as a rough guide.';
+    $('post').innerHTML = post;
+
+    // the five cities whose cost is closest to the chosen city's, one per country, never home's or the destination's
+    var near = pool.filter(function(c){ return c.c !== home.c && c.c !== dest.c; }).map(function(c){
+      return {c:c, need:yu * costRatio(home, c, x)};
+    }).sort(function(a, b){ return Math.abs(Math.log(a.need / need)) - Math.abs(Math.log(b.need / need)); }).slice(0, 5)
+      .sort(function(a, b){ return a.need - b.need; });
+    var close = near.every(function(o){ return Math.abs(o.need / need - 1) <= 0.1; });
+    $('h2').textContent = close ? 'Five cities that cost about the same as ' + dest.n : 'The five cities closest in cost to ' + dest.n;
+    $('h2sub').textContent = close ? 'Each one buys the same life for about the same pay. Pick one to see it in full.'
+                                   : 'Few cities cost the same as ' + dest.n + ', so these are the nearest either side. Pick one to see it in full.';
+    $('cards').innerHTML = near.map(function(o){
+      var k = K[o.c.c];
+      return '<li class="card"><button type="button" data-label="' + esc(o.c.label) + '">' +
+        '<img class="flag" src="' + flag(o.c.c) + '" alt="" width="44" height="33" loading="lazy">' +
+        '<span class="place"><span class="c">' + esc(o.c.n) + '</span><span class="k">' + esc(k.k) + '</span></span>' +
+        '<span class="money"><span class="v">' + money(o.need * k.fx, k.cur) + '</span>' +
+        (k.cur !== 'USD' ? '<span class="u">' + money(o.need, 'USD') + '</span>' : '') +
+        '</span></button></li>';
+    }).join('');
+  }
+
+  var tick;
+  function update(){
+    var m = $('main'); m.classList.add('swap'); clearTimeout(tick);
+    tick = setTimeout(function(){ render(); m.classList.remove('swap'); }, 120);
+  }
+
+  $('home').addEventListener('input', function(e){
+    var c = find(e.target.value); if (!c) return;
+    var old = home; home = c; $('homeFlag').src = flag(c.c);
+    $('cur').textContent = symbol(K[c.c].cur);
+    // keep the same life when the home country changes
+    var y = amount();
+    if (old && y > 0 && old.c !== c.c){
+      var o = K[old.c], n = K[c.c], yu = y / o.fx;
+      $('amount').value = Math.round(yu * costRatio(old, c, yu / (o.r * D.rus)) * n.fx).toLocaleString('en'); fit($('amount'));
+    }
+    update();
+  });
+  $('dest').addEventListener('input', function(e){ var c = find(e.target.value); if (c){ dest = c; $('destFlag').src = flag(c.c); update(); } });
+  ['home','dest'].forEach(function(id){
+    $(id).addEventListener('change', function(e){ if (!find(e.target.value)) render(); });
+    $(id).addEventListener('focus', function(e){ e.target.select(); });
+  });
+  $('amount').addEventListener('input', function(e){
+    var raw = e.target.value.split('.')[0].replace(/[^0-9]/g, '');
+    e.target.value = raw ? Number(raw).toLocaleString('en') : '';
+    render();
+  });
+  $('cards').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if (!b) return;
+    var c = find(b.dataset.label); if (!c) return;
+    $('dest').value = b.dataset.label; dest = c; $('destFlag').src = flag(c.c); fit($('dest')); update();
+    $('dest').scrollIntoView({behavior:'smooth', block:'center'});
+  });
+  $('ask').addEventListener('submit', function(e){ e.preventDefault(); });
+  ['home','amount','dest'].forEach(function(id){ $(id).addEventListener('input', function(e){ fit(e.target); }); });
+  $('cur').textContent = symbol(K[home.c].cur);
+  fitAll();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitAll);
+  render();
+})();
+</script>
+</body>
+</html>
