@@ -118,6 +118,11 @@ for f in sorted(glob.glob('data/rents_*.csv')):
     r = pd.read_csv(f)
     r = r[pd.to_numeric(r.rent, errors='coerce') > 0][['ccode','city','rent']]
     _o = pd.concat([_o[~_o.ccode.isin(set(r.ccode))], r])
+# sources whose city order fails a plain sanity read, kept in the files but not used (2026-10-01):
+# UKR mixes Kyiv city with oblast averages (Lviv above Kyiv); ECU puts Cuenca above Quito; ARG's report leaves out
+# Buenos Aires, which would then take the cheapest covered level; PAK small division samples put Peshawar above Lahore
+OFFICIAL_DROP = {'UKR', 'ECU', 'ARG', 'PAK'}
+_o = _o[~_o.ccode.isin(OFFICIAL_DROP)]
 OFFICIAL = {cc: g.drop_duplicates('city').set_index('city').rent.astype(float).to_dict() for cc, g in _o.groupby('ccode')}
 cstat = con.sql("""SELECT ccode, city_id, SUM(exp_nominal)/SUM(hc) spc, SUM(hc) pop FROM 'data/demogs.parquet'
                    WHERE year=2026 AND urb='urban' AND city_id IS NOT NULL GROUP BY ALL""").df()

@@ -13,3 +13,5 @@ _qa/
 site/
 page.html
 room-to-spend/.vercel/
+video/node_modules/
+video/out/
