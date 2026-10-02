@@ -32,7 +32,7 @@ export const Sentence: React.FC = () => {
         <div style={line(10)}>on <Slot>$100,000</Slot> a year.</div>
         <div style={line(26)}>I am thinking of moving to</div>
         <div style={line(32)}>
-          <Slot cc="GBR" showFlag={done} caret={!done && f >= TYPE_FROM - 6}>{DEST.slice(0, typed) || " "}</Slot>
+          <Slot cc="GBR" showFlag caret={!done && f >= TYPE_FROM - 6}>{DEST.slice(0, typed) || " "}</Slot>
         </div>
       </div>
     </Ground>
