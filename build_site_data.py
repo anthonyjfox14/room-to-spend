@@ -122,9 +122,9 @@ for f in sorted(glob.glob('data/rents_*.csv')):
 # UKR mixes Kyiv city with oblast averages (Lviv above Kyiv); ECU puts Cuenca above Quito; ARG's report leaves out
 # Buenos Aires, which would then take the cheapest covered level; PAK small division samples put Peshawar above Lahore
 OFFICIAL_DROP = {'UKR', 'ECU', 'ARG', 'PAK'}
-# Betam publishes a Turkey average (297.4 a m2, Aug 2026) alongside its provinces; uncovered provinces such as Antalya,
-# Bursa and Kocaeli take it rather than the cheapest published province
-FILL_RENT = {'TUR': 297.4}
+# Turkey: uncovered provinces take the median of Betam's published non-metro provinces (Denizli, 250 a m2), not the
+# cheapest province (too low for Antalya or Bursa) and not the national average (Istanbul-heavy, too high for the east)
+FILL_RENT = {'TUR': 250.0}
 _o = _o[~_o.ccode.isin(OFFICIAL_DROP)]
 OFFICIAL = {cc: g.drop_duplicates('city').set_index('city').rent.astype(float).to_dict() for cc, g in _o.groupby('ccode')}
 cstat = con.sql("""SELECT ccode, city_id, SUM(exp_nominal)/SUM(hc) spc, SUM(hc) pop FROM 'data/demogs.parquet'
