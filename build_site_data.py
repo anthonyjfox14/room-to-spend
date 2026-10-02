@@ -122,6 +122,9 @@ for f in sorted(glob.glob('data/rents_*.csv')):
 # UKR mixes Kyiv city with oblast averages (Lviv above Kyiv); ECU puts Cuenca above Quito; ARG's report leaves out
 # Buenos Aires, which would then take the cheapest covered level; PAK small division samples put Peshawar above Lahore
 OFFICIAL_DROP = {'UKR', 'ECU', 'ARG', 'PAK'}
+# Betam publishes a Turkey average (297.4 a m2, Aug 2026) alongside its provinces; uncovered provinces such as Antalya,
+# Bursa and Kocaeli take it rather than the cheapest published province
+FILL_RENT = {'TUR': 297.4}
 _o = _o[~_o.ccode.isin(OFFICIAL_DROP)]
 OFFICIAL = {cc: g.drop_duplicates('city').set_index('city').rent.astype(float).to_dict() for cc, g in _o.groupby('ccode')}
 cstat = con.sql("""SELECT ccode, city_id, SUM(exp_nominal)/SUM(hc) spc, SUM(hc) pop FROM 'data/demogs.parquet'
@@ -159,6 +162,8 @@ for cc, rows in byc.items():
         # cities the source does not cover take the cheapest covered city: sources cover the biggest, dearest cities,
         # so U and then the lower quartile still put uncovered cities above covered ones (Hegang above Harbin)
         hm = min(hs)
+        if cc in FILL_RENT:   # a source that publishes a national figure: uncovered cities take it, on the same scale
+            hm = min(2.5, max(0.4, U * math.exp(math.log(FILL_RENT[cc]) - lbar)))
         for i, row in enumerate(rows):
             if i not in hit: row += [[1,1,1,round(0.8*hm+0.2,4),1,1,1,1,1,1,1,1], 6]
         continue
