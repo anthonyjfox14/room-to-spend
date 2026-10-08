@@ -41,7 +41,7 @@ and add in squares; the values ship in `data.js` as `unc` and are set in `build_
 | Rent: one figure for the country | 0.26 | Spread of 328 official city rents around their country mean |
 | Other prices at the national average | 0.027 | Spread of US metros' non-housing prices in the page's own maths |
 | Official other prices: BEA 2024 / Japan 2025 / Canada 2019 / UK 2016 | 0.021 / 0.02 / 0.027 / 0.027 | BEA: year-to-year movement of metro levels. Canada and UK: as old as they are, no surer than a city with no figures |
-| Official other prices dropped across a border | that city's own effect | Keeps a detour through a third city usually inside the direct range: 98.1% of the 999,900 routes between the 101 card cities from $100,000. The rest are mostly the Fisher index not being transitive where baskets differ a lot (worst: Bata to Riyadh via Moscow, 43% off against ±13%) |
+| Official other prices dropped across a border | that city's own effect | Keeps a detour through a third city usually inside the direct range: 98.1% of the 999,900 routes between the 101 card cities from $100,000. The rest are mostly the Fisher index not being transitive where baskets differ a lot (worst: Bata to Riyadh via Moscow, 35% off, 0.43 in logs, against ±13%) |
 
 Rent errors are scaled by the housing share of spending. From $100,000 in New York that gives ±4% for another US
 city, ±10% for London, ±12% for Paris or Toronto, ±15% for Tokyo, ±16% for Delhi and ±29% for Lagos. The big number

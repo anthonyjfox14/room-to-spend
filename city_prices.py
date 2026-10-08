@@ -112,13 +112,13 @@ def _eng_t3():
     return sum(t.loc[r].all_items_12region * w for r, w in ENG_POP.items()) / sum(ENG_POP.values())
 
 def gbr_multipliers():
-    global ENG_T3
-    import os
-    if os.path.exists('data/cityprice_gbr.csv'): ENG_T3 = _eng_t3()
     """ONS relative regional consumer price levels, 2016, the last edition published (data/cityprice_gbr.csv), UK = 100,
     without rent. The breakdown by kind of spending exists only for London, England outside London, Scotland, Wales
     and Northern Ireland, so English cities outside London share that row, scaled by their own region's all-items level. Health and education are not published
     and take the region's all-items level; household services (no rent) stand in for utilities."""
+    global ENG_T3
+    import os
+    if os.path.exists('data/cityprice_gbr.csv'): ENG_T3 = _eng_t3()
     t, m = _rows('data/cityprice_gbr.csv', 'data/cityprice_gbr_citymap.csv', 'region')
     if t is None: return {}
     out = {}
