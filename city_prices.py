@@ -44,3 +44,59 @@ def us_multipliers():
 if __name__ == '__main__':
     m = us_multipliers()
     for c in ['New York City','San Francisco','Houston','Cleveland','Miami']: print(c, m[c])
+
+
+# Other countries with official city or regional price levels by kind of spending, against the national average.
+# Each returns {city: 12 multipliers}; slot 4 (housing) carries the utilities level only, because rent comes from the
+# rent sources and the build combines them as 0.8 rent + 0.2 utilities. Cities a source does not cover are left out.
+def _rows(path, mpath, key):
+    import os
+    if not (os.path.exists(path) and os.path.exists(mpath)): return None, None
+    t = pd.read_csv(path).set_index(key)
+    m = pd.read_csv(mpath).dropna(subset=[key])
+    return t, m
+
+def jpn_multipliers():
+    """Statistics Bureau of Japan, regional difference index of consumer prices by prefecture (data/cityprice_jpn.csv).
+    Groups: food (with alcohol and eating out) 1 2 11; utilities to housing; furniture 5; clothing 3; health 6;
+    transport and communications 7 8; recreation 9; education 10; miscellaneous 12."""
+    t, m = _rows('data/cityprice_jpn.csv', 'data/cityprice_jpn_citymap.csv', 'pref_en')
+    if t is None: return {}
+    out = {}
+    for city, pref in zip(m.city, m.pref_en):
+        r = t.loc[pref].drop(["pref_ja", "year"], errors="ignore").astype(float) / 100
+        v = [r.food, r.food, r.clothing, r.utilities, r.furniture, r.health, r.transport_comm, r.transport_comm,
+             r.recreation, r.education, r.food, r.misc]
+        out[city] = [round(float(x), 4) for x in v]
+    return out
+
+def can_multipliers():
+    """Statistics Canada inter-city indexes of price differentials, 2019, the last year published (table 18-10-0003),
+    against the combined average of 15 cities (data/cityprice_can.csv). Shelter is left out (CMHC rents carry housing)
+    and utilities stay at the average; communications sit in household operations in Canada's basket."""
+    t, m = _rows('data/cityprice_can.csv', 'data/cityprice_can_citymap.csv', 'city_statcan')
+    if t is None: return {}
+    out = {}
+    for city, sc in zip(m.city, m.city_statcan):
+        r = t.loc[sc] / 100
+        hh, rec = r.household_operations_furnishings_and_equipment, r.recreation_education_and_reading
+        v = [r.food, r.alcoholic_beverages_tobacco_products_and_recreational_cannabis, r.clothing_and_footwear, 1.0,
+             hh, r.health_and_personal_care, r.transportation, hh, rec, rec, r.food, r.health_and_personal_care]
+        out[city] = [round(float(x), 4) for x in v]
+    return out
+
+def gbr_multipliers():
+    """ONS relative regional consumer price levels, 2016, the last edition published (data/cityprice_gbr.csv), UK = 100,
+    without rent. The breakdown by kind of spending exists only for London, England outside London, Scotland, Wales
+    and Northern Ireland, so English cities outside London share one row. Health and education are not published
+    and take the region's all-items level; household services (no rent) stand in for utilities."""
+    t, m = _rows('data/cityprice_gbr.csv', 'data/cityprice_gbr_citymap.csv', 'region')
+    if t is None: return {}
+    out = {}
+    for city, reg in zip(m.city, m.division_region):
+        r = t.loc[reg] / 100
+        v = [r.c01_food, r.c02_alcohol_tobacco, r.c03_clothing_footwear, r.c04_household_housing_services_excl_rent,
+             r.c05_furnishings_household, r.all_items, r.c07_transport, r.c08_communication, r.c09_recreation_culture,
+             r.all_items, r.c11_restaurants_hotels, r.c12_misc]
+        out[city] = [round(float(x), 4) for x in v]
+    return out

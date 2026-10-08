@@ -1,0 +1,16 @@
+city_statcan,year,all_items,food,shelter,household_operations_furnishings_and_equipment,clothing_and_footwear,transportation,health_and_personal_care,recreation_education_and_reading,alcoholic_beverages_tobacco_products_and_recreational_cannabis
+"St. John's, Newfoundland and Labrador",2019,96,108,87,101,103,100,94,88,111
+"Charlottetown and Summerside, Prince Edward Island",2019,95,103,85,98,102,91,92,106,109
+"Halifax, Nova Scotia",2019,98,103,89,101,103,96,93,113,105
+"Saint John, New Brunswick",2019,92,102,74,97,103,95,90,107,108
+"Montréal, Quebec",2019,93,100,82,100,103,100,102,84,90
+"Ottawa-Gatineau, Ontario part, Ontario/Quebec",2019,101,101,99,104,102,100,102,105,102
+"Toronto, Ontario",2019,107,100,114,104,101,107,103,108,102
+"Winnipeg, Manitoba",2019,93,101,85,94,100,96,91,91,108
+"Regina, Saskatchewan",2019,101,104,105,93,100,96,93,108,111
+"Calgary, Alberta",2019,101,100,104,100,95,95,103,106,103
+"Edmonton, Alberta",2019,100,97,107,97,95,93,98,104,105
+"Vancouver, British Columbia",2019,104,102,105,101,100,102,102,110,110
+"Whitehorse, Yukon",2019,102,112,103,95,95,95,96,107,107
+"Yellowknife, Northwest Territories",2019,112,113,129,99,97,101,104,101,119
+"Iqaluit, Nunavut",2019,,168,,,,,,,

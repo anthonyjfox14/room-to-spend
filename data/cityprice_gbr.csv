@@ -1,0 +1,14 @@
+region,year,c01_food,c02_alcohol_tobacco,c03_clothing_footwear,c04_household_housing_services_excl_rent,c05_furnishings_household,c07_transport,c08_communication,c09_recreation_culture,c11_restaurants_hotels,c12_misc,all_items,all_items_12region
+London,2016,102.2,103.0,103.5,105.1,112.2,103.3,100.0,114.8,113.0,110.5,107.0,107.2
+South East,2016,,,,,,,,,,,,101.5
+East,2016,,,,,,,,,,,,99.8
+South West,2016,,,,,,,,,,,,102.4
+West Midlands,2016,,,,,,,,,,,,98.5
+East Midlands,2016,,,,,,,,,,,,99.6
+North West,2016,,,,,,,,,,,,98.8
+North East,2016,,,,,,,,,,,,98.8
+Yorkshire and the Humber,2016,,,,,,,,,,,,97.7
+Wales,2016,100.8,102.3,97.7,99.6,95.5,100.6,100.0,96.8,95.1,96.2,98.5,98.1
+Scotland,2016,99.8,99.4,99.2,99.7,103.2,99.7,100.0,101.4,100.4,104.8,100.4,100.4
+Northern Ireland,2016,99.7,98.6,98.5,97.0,99.8,96.1,100.0,95.8,98.3,93.4,97.7,97.6
+England (excluding London),2016,97.6,96.8,101.3,98.7,97.4,100.4,100.0,96.2,97.4,99.7,98.7,

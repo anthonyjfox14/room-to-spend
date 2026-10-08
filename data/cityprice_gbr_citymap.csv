@@ -1,0 +1,24 @@
+city,region,division_region
+London,London,London
+Birmingham,West Midlands,England (excluding London)
+Manchester,North West,England (excluding London)
+Liverpool,North West,England (excluding London)
+Leeds,Yorkshire and the Humber,England (excluding London)
+Glasgow,Scotland,Scotland
+Newcastle upon Tyne,North East,England (excluding London)
+Bristol,South West,England (excluding London)
+Sheffield,Yorkshire and the Humber,England (excluding London)
+Nottingham,East Midlands,England (excluding London)
+Edinburgh,Scotland,Scotland
+Leicester,East Midlands,England (excluding London)
+Portsmouth,South East,England (excluding London)
+Brighton,South East,England (excluding London)
+Coventry,West Midlands,England (excluding London)
+Belfast,Northern Ireland,Northern Ireland
+Cardiff,Wales,Wales
+Bournemouth,South West,England (excluding London)
+Southampton,South East,England (excluding London)
+Middlesbrough,North East,England (excluding London)
+Stoke-on-Trent,West Midlands,England (excluding London)
+Hull,Yorkshire and the Humber,England (excluding London)
+Wakefield,Yorkshire and the Humber,England (excluding London)

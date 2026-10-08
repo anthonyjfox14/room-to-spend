@@ -15,3 +15,5 @@ page.html
 room-to-spend/.vercel/
 video/node_modules/
 video/out/
+!data/cityprice_*.csv
+!data/cityprice_*.md

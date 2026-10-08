@@ -1,0 +1,13 @@
+city,city_statcan,note
+Toronto,"Toronto, Ontario",direct match
+Montreal,"Montréal, Quebec",direct match
+Vancouver,"Vancouver, British Columbia",direct match
+Calgary,"Calgary, Alberta",direct match
+Edmonton,"Edmonton, Alberta",direct match
+Winnipeg,"Winnipeg, Manitoba",direct match
+Quebec,,not covered; StatCan's only Quebec city is Montréal and Montréal is not a defensible stand-in for Quebec City
+Ottawa,"Ottawa-Gatineau, Ontario part, Ontario/Quebec",StatCan covers the Ontario part of the Ottawa-Gatineau CMA only; Ottawa is in that part
+Hamilton,,not covered; separate CMA next to Toronto's western edge (~70 km); Toronto is a partly defensible stand-in for non-shelter components but would overstate shelter (Toronto shelter index 114)
+Kitchener,,not covered; Kitchener-Cambridge-Waterloo CMA ~100 km from Toronto; Toronto is a weak stand-in and would overstate shelter
+London,,not covered; ~190 km from Toronto with a separate housing market; Toronto is not a defensible stand-in
+Oshawa,,not covered; separate CMA adjoining Toronto's eastern edge in the commuter belt; Toronto is a partly defensible stand-in for non-shelter components but would overstate shelter

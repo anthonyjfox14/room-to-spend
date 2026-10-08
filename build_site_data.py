@@ -14,7 +14,7 @@ indices, so neither place's habits decide the answer.
 Countries whose exchange rate or price level is unusable (war, collapse, fixed official rates) are left out: EXCLUDE.
 """
 import json, re, duckdb, numpy as np, pandas as pd, pycountry
-from city_prices import us_multipliers
+from city_prices import us_multipliers, jpn_multipliers, can_multipliers, gbr_multipliers
 CITY_M = {'USA': us_multipliers()}   # city price multipliers by division, against the country's average
 
 EXCLUDE = {'SDN','SSD','HTI','TKM','SYR','YEM','VEN','LBN','IRN','MMR','AFG','PSE','PRK','CUB','ZWE','LBY','ERI'}
@@ -177,6 +177,35 @@ for cc, rows in byc.items():
     for row, zi in zip(rows, z):
         h = min(2.5, max(0.4, U * math.exp(zi - zbar)))
         row += [[1,1,1,round(0.8*h+0.2,4),1,1,1,1,1,1,1,1], 3]
-out = dict(year=2026, rus=round(RUS,5), countries=countries, cities=cities)
+# official city prices for the other kinds of spending (city_prices.py): US metros already carry theirs. Elsewhere the
+# city's own levels replace the national average for everything but rent, and utilities take a fifth of housing.
+# The last field of a city row says whether it has its own prices for everything (1) or only its rent (0).
+OTHER = {'JPN': jpn_multipliers(), 'CAN': can_multipliers(), 'GBR': gbr_multipliers()}
+for row in cities:
+    o = OTHER.get(row[1], {}).get(row[0])
+    if o:
+        h = (row[3][3] - 0.2) / 0.8
+        row[3] = o[:3] + [round(0.8 * h + 0.2 * o[3], 4)] + o[4:]
+    row.append(1 if (row[1] == 'USA' or o) else 0)
+
+# how sure (README, "How sure"): standard errors on the log of the answer, added in squares on the page (core.js).
+#  country: the national price level, from ICP 2021 carried to 2026. We cannot test this here, so it is set by how
+#    well measured a country's prices are likely to be: 0.05 where people spend over $40 a day (2021 PPP), 0.07 over
+#    $15, 0.10 below, plus 0.03 where ICP lacks three or more divisions and they take the overall level.
+#  rent: each city's rent against its country's, by source: BEA metro rents 0.05, ONS 0.08, other official or
+#    published city figures 0.10, our estimate 0.15 (out-of-sample error 0.09 to 0.16 in Canada, France, Germany
+#    and the UK), the cheapest covered city 0.20, one figure for the country 0.26 (the spread of official city
+#    rents around their country's mean, 328 cities).
+#  other: a city's other prices, when it takes the national average: 0.027, the spread of US metros' non-housing
+#    price levels in the page's own maths.
+spd = con.sql("SELECT ccode, SUM(exp_ppp)/SUM(hc)/365 d FROM 'data/demogs.parquet' WHERE year=2026 GROUP BY 1").df().set_index('ccode').d
+cunc = {}
+for cc, k in countries.items():
+    d = float(spd.get(cc, 0)); e = 0.05 if d > 40 else 0.07 if d > 15 else 0.10
+    miss = sum(1 for j in range(1, 13) if not (cc in icp.index and j in icp.columns and icp.at[cc, j] == icp.at[cc, j]))
+    cunc[cc] = round(e + (0.03 if miss >= 3 else 0), 3)
+unc = dict(country=cunc, rent={'1': 0.05, '2': 0.08, '3': 0.15, '4': 0.10, '5': 0.26, '6': 0.20}, other=0.027)
+
+out = dict(year=2026, rus=round(RUS,5), countries=countries, cities=cities, unc=unc)
 open('room-to-spend/data.js','w',encoding='utf-8').write('window.RTS=' + json.dumps(out, ensure_ascii=False, separators=(',',':')) + ';\n')
-print(sum(len(c) == 5 for c in cities), 'cities with their own prices,', len(countries), 'countries', len(cities), 'cities', sum(c[2]==2 for c in cities), 'card cities', nfill, 'divisions filled from overall level')
+print(sum(c[5] for c in cities), 'cities with every price their own,', sum(len(c) == 6 for c in cities), 'cities with their own prices,', len(countries), 'countries', len(cities), 'cities', sum(c[2]==2 for c in cities), 'card cities', nfill, 'divisions filled from overall level')
