@@ -45,7 +45,13 @@
   // The parts are independent, so they add in squares:
   //  - each country's price level, across borders only (ICP 2021 carried to 2026): D.unc.country[cc]
   //  - each city's rent against its country, by where the rent comes from (src), times the housing share
-  //  - each city's other prices, when they are the country's average rather than the city's own
+  //  - each city's other prices: the error of its official figures when they count (D.unc.own); when it has none,
+  //    the typical city spread (D.unc.other); when it has them but they are dropped across a border, their own
+  //    known effect on the answer, so the route between two cities stays inside the range
+  function ownEffect(K, c, x){
+    var nat = {n: '', c: c.c, m: null}, rentOnly = {n: c.n, c: c.c, m: c.m.map(function(v, j){ return j === 3 ? v : 1; })};
+    return Math.abs(Math.log(costRatio(K, nat, c, x) / costRatio(K, nat, rentOnly, x)));
+  }
   function logError(D, a, b, x){
     var U = D.unc, K = D.countries;
     if (a.n === b.n && a.c === b.c) return 0;
@@ -54,13 +60,12 @@
     [a, b].forEach(function(c){
       var h = 0.8 * weights(K[c.c], x)[3];
       v += Math.pow(h * U.rent[c.src], 2);
-      if (!(keepAll && c.full)) v += Math.pow(U.other, 2);
+      if (c.full) v += Math.pow(U.own[c.c], 2) + (keepAll ? 0 : Math.pow(ownEffect(K, c, x), 2));
+      else v += Math.pow(U.other, 2);
     });
-    // within a country two cities that share every price differ only in what we cannot see; the answer is the same
-    // figure, and the range shows how far apart they could really be
     return Math.sqrt(v);
   }
 
-  var api = {PTS: PTS, weights: weights, topPoint: topPoint, prices: prices, costRatio: costRatio, logError: logError};
+  var api = {PTS: PTS, weights: weights, topPoint: topPoint, prices: prices, costRatio: costRatio, ownEffect: ownEffect, logError: logError};
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.RTSCore = api;
 })(this);

@@ -59,7 +59,8 @@ def _rows(path, mpath, key):
 def jpn_multipliers():
     """Statistics Bureau of Japan, regional difference index of consumer prices by prefecture (data/cityprice_jpn.csv).
     Groups: food (with alcohol and eating out) 1 2 11; utilities to housing; furniture 5; clothing 3; health 6;
-    transport and communications 7 8; recreation 9; education 10; miscellaneous 12."""
+    transport and communications 7 8; recreation 9; education 10; miscellaneous 12. Tokyo's rent covers four
+    prefectures, its other prices Tokyo-to only (Kanagawa, Saitama and Chiba are within 2.2 points of it without rent)."""
     t, m = _rows('data/cityprice_jpn.csv', 'data/cityprice_jpn_citymap.csv', 'pref_en')
     if t is None: return {}
     out = {}
@@ -70,31 +71,51 @@ def jpn_multipliers():
         out[city] = [round(float(x), 4) for x in v]
     return out
 
+CAN_RAW = 'data/rents_raw/can_icpd/18100003.csv'
+def build_cityprice_can(year=2019):
+    """Rewrites data/cityprice_can.csv from the StatCan table download (CAN_RAW, local only): one row per city, every
+    product group StatCan publishes for that year, snake_case columns."""
+    import re
+    d = pd.read_csv(CAN_RAW)
+    d = d[d.REF_DATE == year]
+    d['g'] = [re.sub(r'[^a-z0-9]+', '_', g.lower()).strip('_') for g in d['Products and product groups']]
+    w = d.pivot_table(index='GEO', columns='g', values='VALUE', aggfunc='first')
+    w.insert(0, 'year', year); w.index.name = 'city_statcan'
+    w.to_csv('data/cityprice_can.csv')
+    return w
+
 def can_multipliers():
     """Statistics Canada inter-city indexes of price differentials, 2019, the last year published (table 18-10-0003),
-    against the combined average of 15 cities (data/cityprice_can.csv). Shelter is left out (CMHC rents carry housing)
-    and utilities stay at the average; communications sit in household operations in Canada's basket."""
+    against the combined average of 15 cities, not the national level (data/cityprice_can.csv). The finest published
+    group is used for each division: food from stores 1, alcohol and tobacco 2, clothing 3, water, fuel and
+    electricity to housing (utilities), household furnishings 5, health care 6, transportation 7, household
+    operations 8 (communications sit there in Canada's basket), recreation 9, education and reading 10, food from
+    restaurants 11, personal care 12. Shelter is left out: CMHC rents carry housing."""
     t, m = _rows('data/cityprice_can.csv', 'data/cityprice_can_citymap.csv', 'city_statcan')
     if t is None: return {}
     out = {}
     for city, sc in zip(m.city, m.city_statcan):
-        r = t.loc[sc] / 100
-        hh, rec = r.household_operations_furnishings_and_equipment, r.recreation_education_and_reading
-        v = [r.food, r.alcoholic_beverages_tobacco_products_and_recreational_cannabis, r.clothing_and_footwear, 1.0,
-             hh, r.health_and_personal_care, r.transportation, hh, rec, rec, r.food, r.health_and_personal_care]
+        r = t.loc[sc].drop('year').astype(float) / 100
+        v = [r.food_purchased_from_stores, r.alcoholic_beverages_tobacco_products_and_recreational_cannabis,
+             r.clothing_and_footwear, r.water_fuel_and_electricity, r.household_furnishings_and_equipment,
+             r.health_care, r.transportation, r.household_operations, r.recreation, r.education_and_reading,
+             r.food_purchased_from_restaurants, r.personal_care]
         out[city] = [round(float(x), 4) for x in v]
     return out
 
 def gbr_multipliers():
     """ONS relative regional consumer price levels, 2016, the last edition published (data/cityprice_gbr.csv), UK = 100,
     without rent. The breakdown by kind of spending exists only for London, England outside London, Scotland, Wales
-    and Northern Ireland, so English cities outside London share one row. Health and education are not published
+    and Northern Ireland, so English cities outside London share that row, scaled by their own region's all-items level. Health and education are not published
     and take the region's all-items level; household services (no rent) stand in for utilities."""
     t, m = _rows('data/cityprice_gbr.csv', 'data/cityprice_gbr_citymap.csv', 'region')
     if t is None: return {}
     out = {}
-    for city, reg in zip(m.city, m.division_region):
-        r = t.loc[reg] / 100
+    for city, reg, own in zip(m.city, m.division_region, m.region):
+        r = t.loc[reg].drop('year').astype(float) / 100
+        # English cities outside London share one breakdown; their own region's all-items level (ONS Table 3) moves
+        # every division by the same factor, so Brighton (South East 101.5) and Hull (Yorkshire 97.7) differ
+        if reg != own: r = r * (t.loc[own].all_items_12region / t.loc[reg].all_items)
         v = [r.c01_food, r.c02_alcohol_tobacco, r.c03_clothing_footwear, r.c04_household_housing_services_excl_rent,
              r.c05_furnishings_household, r.all_items, r.c07_transport, r.c08_communication, r.c09_recreation_culture,
              r.all_items, r.c11_restaurants_hotels, r.c12_misc]

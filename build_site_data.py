@@ -189,22 +189,28 @@ for row in cities:
     row.append(1 if (row[1] == 'USA' or o) else 0)
 
 # how sure (README, "How sure"): standard errors on the log of the answer, added in squares on the page (core.js).
-#  country: the national price level, from ICP 2021 carried to 2026. We cannot test this here, so it is set by how
-#    well measured a country's prices are likely to be: 0.05 where people spend over $40 a day (2021 PPP), 0.07 over
-#    $15, 0.10 below, plus 0.03 where ICP lacks three or more divisions and they take the overall level.
+#  country: the national price level, from ICP 2021 carried to 2026. Part judgement: 0.04 where people spend over
+#    $40 a day (2021 PPP), 0.06 over $15, 0.08 below; plus 0.15 times how far the level was carried (|log| of the
+#    2021-to-2026 drift against the US: Japan 0.39, Nigeria 0.81); plus 0.03 where ICP lacks three or more divisions.
 #  rent: each city's rent against its country's, by source: BEA metro rents 0.05, ONS 0.08, other official or
 #    published city figures 0.10, our estimate 0.15 (out-of-sample error 0.09 to 0.16 in Canada, France, Germany
 #    and the UK), the cheapest covered city 0.20, one figure for the country 0.26 (the spread of official city
 #    rents around their country's mean, 328 cities).
-#  other: a city's other prices, when it takes the national average: 0.027, the spread of US metros' non-housing
-#    price levels in the page's own maths.
+#  other: a city's other prices when it takes the national average: 0.027, the spread of US metros' non-housing
+#    price levels in the page's own maths. When a city has official other prices but they are dropped (across a
+#    border to a city without them), the page uses that city's own known effect instead (core.js).
+#  own: a city's official other prices, by how old and how fine they are: BEA 2024 0.021 (the year-to-year movement
+#    of metro price levels, 0.021, and suburbs on their whole metro), Japan 2025 0.02, Canada 2019 0.04 (yearly
+#    component moves of 0.020 to 0.026, carried seven years), UK 2016 0.04 (ten years, five regions only).
 spd = con.sql("SELECT ccode, SUM(exp_ppp)/SUM(hc)/365 d FROM 'data/demogs.parquet' WHERE year=2026 GROUP BY 1").df().set_index('ccode').d
 cunc = {}
 for cc, k in countries.items():
-    d = float(spd.get(cc, 0)); e = 0.05 if d > 40 else 0.07 if d > 15 else 0.10
+    d = float(spd.get(cc, 0)); e = 0.04 if d > 40 else 0.06 if d > 15 else 0.08
+    e += 0.15 * abs(math.log(float(drift.get(cc, 1)))) if cc in drift.index and drift[cc] == drift[cc] else 0.05
     miss = sum(1 for j in range(1, 13) if not (cc in icp.index and j in icp.columns and icp.at[cc, j] == icp.at[cc, j]))
     cunc[cc] = round(e + (0.03 if miss >= 3 else 0), 3)
-unc = dict(country=cunc, rent={'1': 0.05, '2': 0.08, '3': 0.15, '4': 0.10, '5': 0.26, '6': 0.20}, other=0.027)
+unc = dict(country=cunc, rent={'1': 0.05, '2': 0.08, '3': 0.15, '4': 0.10, '5': 0.26, '6': 0.20}, other=0.027,
+           own={'USA': 0.021, 'JPN': 0.02, 'CAN': 0.04, 'GBR': 0.04})
 
 out = dict(year=2026, rus=round(RUS,5), countries=countries, cities=cities, unc=unc)
 open('room-to-spend/data.js','w',encoding='utf-8').write('window.RTS=' + json.dumps(out, ensure_ascii=False, separators=(',',':')) + ';\n')

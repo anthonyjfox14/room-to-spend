@@ -12,8 +12,9 @@ Every city starts from its country's prices. On top of that:
 
 - **Every price, official:** US metros (BEA regional price parities, 2024), Japanese prefectures (Statistics Bureau
   regional difference index), Canadian cities (StatCan inter-city price differentials, 2019, the last year published,
-  seven cities) and UK regions (ONS relative regional price levels, 2016, the last edition: London, the rest of
-  England, Scotland, Wales, Northern Ireland). Loaded in `city_prices.py` from `data/bea_rpp_msa.csv` and
+  seven cities, against their 15-city average) and UK regions (ONS relative regional price levels, 2016, the last
+  edition: a breakdown for London, the rest of England, Scotland, Wales and Northern Ireland, with English cities
+  outside London scaled by their own region's overall level). Loaded in `city_prices.py` from `data/bea_rpp_msa.csv` and
   `data/cityprice_*.csv`; each `cityprice_*.md` gives the source and its caveats. Within one country every city
   difference counts. Across borders the non-rent prices count only when both cities have them, so two cities are
   always compared on the same basis.
@@ -33,15 +34,18 @@ and add in squares; the values ship in `data.js` as `unc` and are set in `build_
 
 | Part | Size (log) | Basis |
 |---|---|---|
-| Each country's price level, across borders only | 0.05 / 0.07 / 0.10, +0.03 if ICP lacks 3+ divisions | Assumed by spend a head (over $40 a day, over $15, below). ICP extrapolation error cannot be tested with the data here. |
+| Each country's price level, across borders only | 0.04 / 0.06 / 0.08 by spend a head (over $40 a day, over $15, below), + 0.15 × how far ICP 2021 was carried to 2026, + 0.03 if ICP lacks 3+ divisions | Judgement: ICP extrapolation error cannot be tested with the data here. The carry term gives Japan (yen) and Nigeria (naira) wide ranges. |
 | Rent: BEA / ONS / other official or published | 0.05 / 0.08 / 0.10 | Source quality |
 | Rent: our estimate | 0.15 | Out-of-sample error 0.09 to 0.16 (Canada, France, Germany, UK) |
 | Rent: cheapest covered city | 0.20 | |
 | Rent: one figure for the country | 0.26 | Spread of 328 official city rents around their country mean |
 | Other prices at the national average | 0.027 | Spread of US metros' non-housing prices in the page's own maths |
+| Official other prices: BEA 2024 / Japan 2025 / Canada 2019 / UK 2016 | 0.021 / 0.02 / 0.04 / 0.04 | Year-to-year movement of BEA metro levels (0.021) and StatCan components (0.020 to 0.026), carried to 2026 |
+| Official other prices dropped across a border | that city's own effect | So the answer from A to C via B stays inside the range from A to C |
 
-Rent errors are scaled by the housing share of spending. From $100,000 in New York that gives about ±1% for
-another US city, ±10% for London or Toronto and ±13% for Delhi or Lagos. The big number itself stays exact.
+Rent errors are scaled by the housing share of spending. From $100,000 in New York that gives ±4% for another US
+city, ±10% for London, ±12% for Paris or Toronto, ±15% for Tokyo, ±16% for Delhi and ±29% for Lagos. The big number
+itself stays exact. The page says the sizes are partly judgement.
 
 ## Build
 1. `build_data.py` joins the WDL city category and city 25-demog parquets (local only, not in this repo).

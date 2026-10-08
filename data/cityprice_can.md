@@ -16,3 +16,7 @@ StatCan says the figures "should not be interpreted as a measure of differences 
 ## City map
 
 data/cityprice_can_citymap.csv maps the WDL cities to the StatCan city that covers them; uncovered cities are left blank with a note.
+
+
+## Columns (rebuilt 2026-10-08)
+`cityprice_can.csv` now carries every product group StatCan publishes for 2019, snake_case, written by `build_cityprice_can()` in `city_prices.py` from the raw table download. `can_multipliers()` uses the finest group for each COICOP division, including water, fuel and electricity for utilities and education and reading for education. 100 is the combined average of 15 cities, not the national level.

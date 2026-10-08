@@ -1,16 +1,16 @@
-city_statcan,year,all_items,food,shelter,household_operations_furnishings_and_equipment,clothing_and_footwear,transportation,health_and_personal_care,recreation_education_and_reading,alcoholic_beverages_tobacco_products_and_recreational_cannabis
-"St. John's, Newfoundland and Labrador",2019,96,108,87,101,103,100,94,88,111
-"Charlottetown and Summerside, Prince Edward Island",2019,95,103,85,98,102,91,92,106,109
-"Halifax, Nova Scotia",2019,98,103,89,101,103,96,93,113,105
-"Saint John, New Brunswick",2019,92,102,74,97,103,95,90,107,108
-"Montréal, Quebec",2019,93,100,82,100,103,100,102,84,90
-"Ottawa-Gatineau, Ontario part, Ontario/Quebec",2019,101,101,99,104,102,100,102,105,102
-"Toronto, Ontario",2019,107,100,114,104,101,107,103,108,102
-"Winnipeg, Manitoba",2019,93,101,85,94,100,96,91,91,108
-"Regina, Saskatchewan",2019,101,104,105,93,100,96,93,108,111
-"Calgary, Alberta",2019,101,100,104,100,95,95,103,106,103
-"Edmonton, Alberta",2019,100,97,107,97,95,93,98,104,105
-"Vancouver, British Columbia",2019,104,102,105,101,100,102,102,110,110
-"Whitehorse, Yukon",2019,102,112,103,95,95,95,96,107,107
-"Yellowknife, Northwest Territories",2019,112,113,129,99,97,101,104,101,119
-"Iqaluit, Nunavut",2019,,168,,,,,,,
+city_statcan,year,alcoholic_beverages,alcoholic_beverages_tobacco_products_and_recreational_cannabis,all_items,bakery_and_other_cereal_products,clothing_and_footwear,dairy_products_and_eggs,education_and_reading,food,food_purchased_from_restaurants,food_purchased_from_stores,fruit_and_vegetables,gasoline,health_and_personal_care,health_care,household_furnishings_and_equipment,household_operations,household_operations_furnishings_and_equipment,meat_poultry_and_fish,other_food_purchased_from_stores,other_private_transportation,owned_accommodation,personal_care,private_transportation,public_transportation,purchase_of_passenger_vehicles,recreation,recreation_education_and_reading,rented_accommodation,shelter,tobacco_products_and_smokers_supplies,transportation,water_fuel_and_electricity
+"Calgary, Alberta",2019,101.0,103.0,101.0,99.0,95.0,102.0,107.0,100.0,97.0,102.0,104.0,85.0,103.0,103.0,94.0,103.0,100.0,103.0,100.0,101.0,103.0,103.0,94.0,100.0,92.0,105.0,106.0,105.0,104.0,108.0,95.0,112.0
+"Charlottetown and Summerside, Prince Edward Island",2019,107.0,109.0,95.0,109.0,102.0,104.0,109.0,103.0,103.0,103.0,107.0,96.0,92.0,97.0,104.0,95.0,98.0,96.0,104.0,73.0,77.0,87.0,91.0,97.0,101.0,104.0,106.0,77.0,85.0,114.0,91.0,141.0
+"Edmonton, Alberta",2019,107.0,105.0,100.0,97.0,95.0,96.0,104.0,97.0,96.0,98.0,100.0,83.0,98.0,103.0,94.0,98.0,97.0,100.0,95.0,96.0,104.0,94.0,92.0,98.0,92.0,105.0,104.0,104.0,107.0,100.0,93.0,132.0
+"Halifax, Nova Scotia",2019,101.0,105.0,98.0,107.0,103.0,101.0,130.0,103.0,103.0,103.0,105.0,95.0,93.0,101.0,104.0,99.0,101.0,96.0,107.0,88.0,82.0,86.0,96.0,97.0,102.0,104.0,113.0,81.0,89.0,117.0,96.0,142.0
+"Iqaluit, Nunavut",2019,,,,217.0,,152.0,,168.0,130.0,185.0,204.0,,,,,,,128.0,218.0,,,,,,,,,,,,,
+"Montréal, Quebec",2019,92.0,90.0,93.0,103.0,103.0,102.0,57.0,100.0,99.0,100.0,99.0,104.0,102.0,98.0,103.0,98.0,100.0,100.0,100.0,91.0,82.0,106.0,99.0,107.0,103.0,98.0,84.0,80.0,82.0,85.0,100.0,84.0
+"Ottawa-Gatineau, Ontario part, Ontario/Quebec",2019,102.0,102.0,101.0,102.0,102.0,100.0,113.0,101.0,102.0,101.0,99.0,98.0,102.0,104.0,101.0,105.0,104.0,101.0,101.0,91.0,97.0,100.0,98.0,112.0,102.0,101.0,105.0,102.0,99.0,101.0,100.0,107.0
+"Regina, Saskatchewan",2019,111.0,111.0,101.0,103.0,100.0,102.0,119.0,104.0,103.0,104.0,108.0,94.0,93.0,101.0,100.0,91.0,93.0,101.0,105.0,83.0,101.0,85.0,93.0,112.0,101.0,102.0,108.0,103.0,105.0,112.0,96.0,131.0
+"Saint John, New Brunswick",2019,103.0,108.0,92.0,106.0,103.0,100.0,123.0,102.0,104.0,101.0,103.0,99.0,90.0,99.0,104.0,94.0,97.0,92.0,105.0,82.0,69.0,80.0,94.0,101.0,101.0,99.0,107.0,56.0,74.0,119.0,95.0,146.0
+"St. John's, Newfoundland and Labrador",2019,112.0,111.0,96.0,106.0,103.0,104.0,65.0,108.0,111.0,106.0,115.0,102.0,94.0,98.0,105.0,99.0,101.0,97.0,108.0,98.0,82.0,89.0,100.0,100.0,101.0,101.0,88.0,76.0,87.0,110.0,100.0,137.0
+"Toronto, Ontario",2019,102.0,102.0,107.0,97.0,101.0,101.0,125.0,100.0,101.0,99.0,98.0,99.0,103.0,104.0,101.0,106.0,104.0,99.0,101.0,113.0,110.0,102.0,107.0,113.0,104.0,99.0,108.0,117.0,114.0,100.0,107.0,130.0
+"Vancouver, British Columbia",2019,111.0,110.0,104.0,102.0,100.0,100.0,110.0,102.0,100.0,103.0,104.0,133.0,102.0,97.0,101.0,101.0,101.0,106.0,101.0,100.0,104.0,108.0,105.0,81.0,99.0,110.0,110.0,108.0,105.0,109.0,102.0,103.0
+"Whitehorse, Yukon",2019,99.0,107.0,102.0,114.0,95.0,106.0,107.0,112.0,107.0,114.0,129.0,120.0,96.0,101.0,98.0,93.0,95.0,107.0,106.0,79.0,104.0,92.0,94.0,99.0,96.0,107.0,107.0,92.0,103.0,127.0,95.0,126.0
+"Winnipeg, Manitoba",2019,101.0,108.0,93.0,98.0,100.0,94.0,79.0,101.0,101.0,100.0,103.0,94.0,91.0,95.0,100.0,91.0,94.0,101.0,101.0,93.0,84.0,86.0,95.0,107.0,96.0,98.0,91.0,84.0,85.0,127.0,96.0,87.0
+"Yellowknife, Northwest Territories",2019,114.0,119.0,112.0,115.0,97.0,106.0,104.0,113.0,116.0,112.0,123.0,112.0,104.0,111.0,97.0,100.0,99.0,107.0,104.0,89.0,106.0,96.0,101.0,103.0,106.0,99.0,101.0,140.0,129.0,133.0,101.0,226.0
