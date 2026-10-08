@@ -14,7 +14,7 @@ Every city starts from its country's prices. On top of that:
   regional difference index), Canadian cities (StatCan inter-city price differentials, 2019, the last year published,
   seven cities, against their 15-city average) and UK regions (ONS relative regional price levels, 2016, the last
   edition: a breakdown for London, the rest of England, Scotland, Wales and Northern Ireland, with English cities
-  outside London scaled by their own region's overall level). Loaded in `city_prices.py` from `data/bea_rpp_msa.csv` and
+  outside London scaled by their own region's overall level against the population-weighted average of the eight). Loaded in `city_prices.py` from `data/bea_rpp_msa.csv` and
   `data/cityprice_*.csv`; each `cityprice_*.md` gives the source and its caveats. Within one country every city
   difference counts. Across borders the non-rent prices count only when both cities have them, so two cities are
   always compared on the same basis.
@@ -40,8 +40,8 @@ and add in squares; the values ship in `data.js` as `unc` and are set in `build_
 | Rent: cheapest covered city | 0.20 | |
 | Rent: one figure for the country | 0.26 | Spread of 328 official city rents around their country mean |
 | Other prices at the national average | 0.027 | Spread of US metros' non-housing prices in the page's own maths |
-| Official other prices: BEA 2024 / Japan 2025 / Canada 2019 / UK 2016 | 0.021 / 0.02 / 0.04 / 0.04 | Year-to-year movement of BEA metro levels (0.021) and StatCan components (0.020 to 0.026), carried to 2026 |
-| Official other prices dropped across a border | that city's own effect | So the answer from A to C via B stays inside the range from A to C |
+| Official other prices: BEA 2024 / Japan 2025 / Canada 2019 / UK 2016 | 0.021 / 0.02 / 0.027 / 0.027 | BEA: year-to-year movement of metro levels. Canada and UK: as old as they are, no surer than a city with no figures |
+| Official other prices dropped across a border | that city's own effect | Keeps a detour through a third city usually inside the direct range: 98.1% of the 999,900 routes between the 101 card cities from $100,000. The rest are mostly the Fisher index not being transitive where baskets differ a lot (worst: Bata to Riyadh via Moscow, 43% off against ±13%) |
 
 Rent errors are scaled by the housing share of spending. From $100,000 in New York that gives ±4% for another US
 city, ±10% for London, ±12% for Paris or Toronto, ±15% for Tokyo, ±16% for Delhi and ±29% for Lagos. The big number

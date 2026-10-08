@@ -103,7 +103,18 @@ def can_multipliers():
         out[city] = [round(float(x), 4) for x in v]
     return out
 
+# mid-2016 population (millions) of the eight English regions outside London, to average their Table 3 levels:
+# the English cities are scaled against that average, not against Table 1's 98.7, which is measured differently
+ENG_POP = {'South East': 9.03, 'East': 6.13, 'South West': 5.52, 'West Midlands': 5.80, 'East Midlands': 4.72,
+           'North West': 7.22, 'North East': 2.64, 'Yorkshire and the Humber': 5.43}
+def _eng_t3():
+    t = pd.read_csv('data/cityprice_gbr.csv').set_index('region')
+    return sum(t.loc[r].all_items_12region * w for r, w in ENG_POP.items()) / sum(ENG_POP.values())
+
 def gbr_multipliers():
+    global ENG_T3
+    import os
+    if os.path.exists('data/cityprice_gbr.csv'): ENG_T3 = _eng_t3()
     """ONS relative regional consumer price levels, 2016, the last edition published (data/cityprice_gbr.csv), UK = 100,
     without rent. The breakdown by kind of spending exists only for London, England outside London, Scotland, Wales
     and Northern Ireland, so English cities outside London share that row, scaled by their own region's all-items level. Health and education are not published
@@ -115,7 +126,9 @@ def gbr_multipliers():
         r = t.loc[reg].drop('year').astype(float) / 100
         # English cities outside London share one breakdown; their own region's all-items level (ONS Table 3) moves
         # every division by the same factor, so Brighton (South East 101.5) and Hull (Yorkshire 97.7) differ
-        if reg != own: r = r * (t.loc[own].all_items_12region / t.loc[reg].all_items)
+        if reg != own:
+            r = r * (t.loc[own].all_items_12region / ENG_T3)
+            r['c08_communication'] = 1.0          # ONS sets communication to 100 everywhere
         v = [r.c01_food, r.c02_alcohol_tobacco, r.c03_clothing_footwear, r.c04_household_housing_services_excl_rent,
              r.c05_furnishings_household, r.all_items, r.c07_transport, r.c08_communication, r.c09_recreation_culture,
              r.all_items, r.c11_restaurants_hotels, r.c12_misc]

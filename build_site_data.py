@@ -199,9 +199,9 @@ for row in cities:
 #  other: a city's other prices when it takes the national average: 0.027, the spread of US metros' non-housing
 #    price levels in the page's own maths. When a city has official other prices but they are dropped (across a
 #    border to a city without them), the page uses that city's own known effect instead (core.js).
-#  own: a city's official other prices, by how old and how fine they are: BEA 2024 0.021 (the year-to-year movement
-#    of metro price levels, 0.021, and suburbs on their whole metro), Japan 2025 0.02, Canada 2019 0.04 (yearly
-#    component moves of 0.020 to 0.026, carried seven years), UK 2016 0.04 (ten years, five regions only).
+#  own: a city's official other prices: BEA 2024 0.021 (the year-to-year movement of metro price levels, and suburbs
+#    on their whole metro), Japan 2025 0.02. Canada 2019 and UK 2016 are old enough that their city differences may
+#    have moved by as much as they show, so they take the same 0.027 as a city with no figures: never less sure.
 spd = con.sql("SELECT ccode, SUM(exp_ppp)/SUM(hc)/365 d FROM 'data/demogs.parquet' WHERE year=2026 GROUP BY 1").df().set_index('ccode').d
 cunc = {}
 for cc, k in countries.items():
@@ -210,7 +210,7 @@ for cc, k in countries.items():
     miss = sum(1 for j in range(1, 13) if not (cc in icp.index and j in icp.columns and icp.at[cc, j] == icp.at[cc, j]))
     cunc[cc] = round(e + (0.03 if miss >= 3 else 0), 3)
 unc = dict(country=cunc, rent={'1': 0.05, '2': 0.08, '3': 0.15, '4': 0.10, '5': 0.26, '6': 0.20}, other=0.027,
-           own={'USA': 0.021, 'JPN': 0.02, 'CAN': 0.04, 'GBR': 0.04})
+           own={'USA': 0.021, 'JPN': 0.02, 'CAN': 0.027, 'GBR': 0.027})
 
 out = dict(year=2026, rus=round(RUS,5), countries=countries, cities=cities, unc=unc)
 open('room-to-spend/data.js','w',encoding='utf-8').write('window.RTS=' + json.dumps(out, ensure_ascii=False, separators=(',',':')) + ';\n')
